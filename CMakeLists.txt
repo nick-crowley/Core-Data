@@ -285,7 +285,7 @@ target_include_directories(appDatabase BEFORE
 	
 # Set linker dependencies
 target_link_libraries(appDatabase
-	#libCoreData
+	libCoreData
 	"${BASE_FOLDER}../Core-Platform/build/$(Configuration)/libCorePlatform.lib"
 )
 
