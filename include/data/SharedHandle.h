@@ -1,7 +1,7 @@
 /* o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o */ /*!
 * @copyright	Copyright (c) 2023, Nick Crowley. All rights reserved.
 * 
-* Redistribution and use in source and binary forms, with or without modification, are permitted
+* Redistribution and use in source and binary data, with or without modification, are permitted
 * provided that the following conditions are met:
 * 
 * 1. Redistributions of source code must retain the above copyright notice, this list of conditions
@@ -26,20 +26,8 @@
 // o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=o Preprocessor Directives o~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o
 #pragma once
 // o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o Header Files o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o
-#include <library/core.Platform.h>
-
-// Dependencies
-#include "../../src/PlatformSdk.h"
-#include "../../src/libBoost.h"
-#include <../external/sqlite/sqlite3.h>
-#include <gsl/gsl>
-
-// Export macro
-#include "../../src/library/DataExport.h"
-
-// Library headers
-#include "data/Connection.h"
-
+#include "library/core.Data.h"
+#include "core/SmartHandle.h"
 // o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o Name Imports o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o
 
 // o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o Forward Declarations o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o
@@ -49,7 +37,25 @@
 // o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~o Constants & Enumerations o~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o
 
 // o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-o Class Declarations o-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o
+namespace core::detail
+{
+    template <>
+    struct HandleTraits<::sqlite3*> {
+        std::add_pointer_t<::sqlite3> constexpr
+        inline static empty = nullptr;
 
+        auto constexpr
+        inline static release = [](::sqlite3* db) {
+            ::sqlite3_close(db);
+        };
+    };
+}
+namespace core::data
+{
+    //! @brief  Shared @c ::sqlite3* released using @c ::sqlite3_close()
+    using SharedDatabase = SmartHandle<::sqlite3*>;
+    
+}	// namespace core::data
 // o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-o Non-member Methods o-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o
 
 // o~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~o Global Functions o~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~-~=~o
